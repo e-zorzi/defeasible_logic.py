@@ -1,11 +1,11 @@
 from setuptools import setup
 
 setup(
-   name='defeasiblelogic',
-   version='0.1',
-   description='Simple package implementing defeasible logic',
-   author='Edoardo Zorzi',
-   author_email='edovi@icloud.com',
-   packages=['defeasiblelogic'],  #same as name
-   #install_requires=['operator'], #external packages as dependencies
+    name="defeasiblelogic",
+    version="0.1.1",
+    description="Simple package implementing defeasible logic",
+    author="Edoardo Zorzi",
+    author_email="edovi@icloud.com",
+    packages=["defeasiblelogic"],  # same as name
+    # install_requires=['operator'], #external packages as dependencies
 )

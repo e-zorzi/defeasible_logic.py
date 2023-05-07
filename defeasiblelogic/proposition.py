@@ -11,7 +11,9 @@ class Proposition:
             and operator != "!="
             and (isinstance(value, list) or value in [True, False])
         ):
-            raise
+            raise ValueError(
+                "Used wrong operator (only '=' and '!=' allowed) for list or boolean value"
+            )
         else:
             if isinstance(value, list) and len(value) == 1:
                 self.value = value[0]
@@ -64,4 +66,4 @@ def map_operator(op_string):
     elif op_string == ">=":
         return operator.ge
     else:
-        raise
+        raise ValueError("Wrong type of operator")
