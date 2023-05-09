@@ -1,9 +1,17 @@
 import operator
+from typing import Union
 
 
 class Proposition:
-    def __init__(self, name, value, operator="="):
+    def __init__(
+        self, name: str, value: Union[None, int, bool] = None, operator: str = "="
+    ) -> None:
         self.name = name
+        if value is None:
+            if name.startswith("~"):
+                value = False
+            else:
+                value = True
         self.operator_string = operator
         self.operator = map_operator(operator)
         if (

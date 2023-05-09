@@ -1,20 +1,12 @@
 class Atom:
-    def __init__(self, value=None, opposite=None):
+    def __init__(self, value=None):
         self.value = value
-        self.opposite = opposite
 
-    def get_value(self):
-        if self.value is None:
-            return -12989838
-        else:
-            return self.value
+    @property
+    def value(self):
+        return self.value
 
-    def equal(self, other):
-        if self.value is None or (isinstance(other, Atom) and other.value is None):
+    def __eq__(self, __other: object) -> bool:
+        if not isinstance(__other, Atom):
             return False
-        else:
-            if isinstance(other, Atom):
-                return self.value == other.value
-            else:
-                return self.value == other
-        return False
+        return self.value == __other.value

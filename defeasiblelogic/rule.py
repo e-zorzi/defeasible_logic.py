@@ -1,4 +1,6 @@
+from typing import Optional
 from .atom import Atom
+from .arguments import Arguments
 
 
 class Rule:
@@ -7,7 +9,7 @@ class Rule:
         self.consequent = consequent
         self.rule_type = rule_type
 
-    def evaluate(self, arguments):
+    def evaluate(self, arguments: Arguments) -> bool:
         for proposition in self.antecedents:
             proposition_value = False
             for arg in arguments:
@@ -22,13 +24,13 @@ class Rule:
         for ant in ants:
             self.antecedents.append(ant)
 
-    def activate(self, arguments):
+    def activate(self, arguments: Arguments) -> Optional[Atom]:
         if self.evaluate(arguments):
             # Atom for which 1 and 0 are opposites
-            return Atom(value=self.consequent, opposite=(self.consequent - 1) ** 2)
+            return Atom(value=self.consequent == 1, opposite=self.consequent == 0)
         else:
             # Generic (None) atom
-            Atom()
+            return None
 
     def slice_dataframe(self, df, complement=False):
         tmp = df.copy()
@@ -39,6 +41,15 @@ class Rule:
                 mask = ~mask
             tmp = tmp[mask == True]
         return tmp
+
+    def has_opposite_consequent(self, __other: object):
+        """TODO only works if rules have consequent 1 or 0"""
+        if not isinstance(__other, Rule):
+            return False
+        if self.consequent == 1 or self.consequent == 0:
+            return (self.consequent - __other.consequent) ** 2 == 1
+        else:
+            return False
 
     def __str__(self):
         arrow = (
