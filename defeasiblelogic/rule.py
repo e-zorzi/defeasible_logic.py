@@ -1,18 +1,22 @@
-from typing import Optional
+from typing import Optional, List
 from .atom import Atom
 from .arguments import Arguments
+from .fact import Fact
 
 
 class Rule:
     def __init__(self, antecedents=[], consequent=1, rule_type="defeasible"):
+        if not isinstance(antecedents, list):
+            raise ValueError("Antecedents must be an iterable")
         self.antecedents = antecedents
         self.consequent = consequent
         self.rule_type = rule_type
 
-    def evaluate(self, arguments: Arguments) -> bool:
+    # TODO think of passing either facts or argument
+    def evaluate(self, facts: List[Fact]) -> bool:
         for proposition in self.antecedents:
             proposition_value = False
-            for arg in arguments:
+            for arg in facts:
                 proposition_value |= proposition.evaluate(arg)
                 if proposition_value:
                     break
@@ -27,7 +31,7 @@ class Rule:
     def activate(self, arguments: Arguments) -> Optional[Atom]:
         if self.evaluate(arguments):
             # Atom for which 1 and 0 are opposites
-            return Atom(value=self.consequent == 1, opposite=self.consequent == 0)
+            return Atom(value=self.consequent == 1)
         else:
             # Generic (None) atom
             return None

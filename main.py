@@ -4,12 +4,12 @@ from defeasiblelogic.fact import Fact
 from defeasiblelogic.proposition import Proposition
 from defeasiblelogic.rule import Rule
 from defeasiblelogic.superiorityrelation import SuperiorityRelation
-from defeasiblelogic import ConsistentTheory
+from defeasiblelogic.consistenttheory import ConsistentTheory
 
 
-rule1 = Rule(Proposition("a"), consequent=1)
-rule2 = Rule(Proposition("b"), consequent=0)
-rule3 = Rule(Proposition("b"), consequent=1)
+rule1 = Rule([Proposition("a")], consequent=1)
+rule2 = Rule([Proposition("b")], consequent=0)
+rule3 = Rule([Proposition("b")], consequent=1)
 rules = [rule1, rule2, rule3]
 sup_rels = [
     SuperiorityRelation(rule1, rule2),
@@ -17,5 +17,6 @@ sup_rels = [
 ]
 theory = ConsistentTheory(rules, sup_rels)
 facts = [Fact("a"), Fact("b")]
+theory.superiority_relations
 args = Arguments(facts, Atom(True))
 theory.evaluate([args])

@@ -14,10 +14,10 @@ class ConsistentTheory(Theory):
     ) -> None:
         super().__init__(rules, superiority_relations)
 
-    def evaluate_arguments(self, args: Arguments) -> Atom:
+    def evaluate_arguments(self, args: Arguments) -> bool:
         yea, nay = set(), set()
         for rule in self.rules:
-            atom = rule.activate(args)
+            atom = rule.activate(args.facts)
             if atom.value is not None:
                 if atom.value:
                     yea.add(rule)
@@ -38,3 +38,4 @@ class ConsistentTheory(Theory):
                 if len(winners.intersection(yea)) == 0:
                     all_lose = False
                     break
+            # TODO

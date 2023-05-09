@@ -21,12 +21,12 @@ class SuperiorityRelations:
 
     @property
     def superiority_relations(self) -> Set[SuperiorityRelation]:
-        return self.superiority_relations
+        return self._superiority_relations
 
     @superiority_relations.setter
     def superiority_relations(self, value: List[SuperiorityRelation]) -> None:
         # We want a set for O(1) membership tests
-        self.superiority_relations = set(value)
+        self._superiority_relations = set(value)
         """
         Dict holding, for each rule, information about the
         rules that beat it
