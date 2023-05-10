@@ -7,17 +7,23 @@ from defeasiblelogic.superiorityrelation import SuperiorityRelation
 from defeasiblelogic.consistenttheory import ConsistentTheory
 
 
-rule1 = Rule([Proposition("a")], consequent=1)
-rule2 = Rule([Proposition("b")], consequent=0)
-rule3 = Rule([Proposition("b")], consequent=1)
+rule1 = Rule([Proposition("a"), Proposition("b")], consequent=0)
+rule2 = Rule(Proposition("c"), consequent=1)
+rule3 = Rule(Proposition("d"), consequent=0)
 rules = [rule1, rule2, rule3]
 sup_rels = [
     SuperiorityRelation(rule1, rule2),
-    SuperiorityRelation(rule2, rule3),
 ]
 theory = ConsistentTheory(rules, sup_rels)
-facts = [Fact("a"), Fact("b")]
-theory.superiority_relations
-args = Arguments(facts, Atom(True))
-atoms = theory.evaluate([args])
-print(theory.accuracy_score([args]))
+facts1 = [Fact("a"), Fact("b")]  # Should create return 0
+facts2 = [Fact("a"), Fact("b"), Fact("c")]  # Should create return 1
+facts3 = [Fact("c"), Fact("d")]  # Should create return undefined
+
+args1 = Arguments(facts1, Atom(False))
+args2 = Arguments(facts2, Atom(True))
+args3 = Arguments(facts3, Atom())
+atoms = theory.evaluate([args1, args2, args3])
+for atom in atoms:
+    print(atom)
+acc = theory.accuracy_score([args1, args2, args3])
+print(acc)

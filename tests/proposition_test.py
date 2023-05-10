@@ -21,9 +21,11 @@ class TestProposition(unittest.TestCase):
         # if no tilde prefixes the name
         prop1 = Proposition("b")
         self.assertTrue(prop1.value)
+        self.assertEqual(prop1.name, "b")
         # Same if we pass True value and a tilde
         prop2 = Proposition("~b", True)
         self.assertTrue(prop2.value)
+        self.assertEqual(prop2.name, "~b")
         # But if we pass no value and tilde prefixes the name
         # then we assume we wanted to pass False
         prop3 = Proposition("~e")

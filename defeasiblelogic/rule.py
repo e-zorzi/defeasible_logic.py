@@ -1,14 +1,23 @@
-from typing import Optional, List
+from typing import List, Union, Tuple, Callable
 from .atom import Atom
 from .arguments import Arguments
 from .fact import Fact
+from .proposition import Proposition
 
 
 class Rule:
-    def __init__(self, antecedents=[], consequent=1, rule_type="defeasible"):
-        if not isinstance(antecedents, list):
-            raise ValueError("Antecedents must be an iterable")
-        self.antecedents = antecedents
+    def __init__(
+        self,
+        antecedents: Union[Proposition, List[Proposition], None] = None,
+        consequent=1,
+        rule_type="defeasible",
+    ):
+        if antecedents is None:
+            self.antecedents = list()
+        elif isinstance(antecedents, Proposition):
+            self.antecedents = [antecedents]
+        else:
+            self.antecedents = antecedents
         self.consequent = consequent
         self.rule_type = rule_type
 
@@ -17,8 +26,8 @@ class Rule:
         for proposition in self.antecedents:
             proposition_value = False
             for arg in facts:
-                proposition_value |= proposition.evaluate(arg)
-                if proposition_value:
+                if proposition.evaluate(arg):
+                    proposition_value = True
                     break
             if not proposition_value:
                 return False
@@ -28,13 +37,15 @@ class Rule:
         for ant in ants:
             self.antecedents.append(ant)
 
-    def activate(self, arguments: Arguments) -> Optional[Atom]:
+    # TODO check this interface
+    def activate(self, arguments: Arguments) -> Tuple[bool, Atom]:
         if self.evaluate(arguments):
-            # Atom for which 1 and 0 are opposites
-            return Atom(value=self.consequent == 1)
+            # Activated and return result as Atom
+            return True, Atom(value=self.consequent == 1)
         else:
-            # Generic (None) atom
-            return None
+            # Not activated; advisable to never use the second a
+            # rgument in this case
+            return False, Atom()
 
     def slice_dataframe(self, df, complement=False):
         tmp = df.copy()
@@ -46,7 +57,7 @@ class Rule:
             tmp = tmp[mask == True]
         return tmp
 
-    def has_opposite_consequent(self, __other: object):
+    def has_opposite_consequent(self, __other: object) -> bool:
         """TODO only works if rules have consequent 1 or 0"""
         if not isinstance(__other, Rule):
             return False
@@ -55,7 +66,7 @@ class Rule:
         else:
             return False
 
-    def __str__(self):
+    def __str__(self) -> str:
         arrow = (
             "=>"
             if self.rule_type == "defeasible"
@@ -72,7 +83,7 @@ class Rule:
             return f"{str_antecedents} {arrow} {self.consequent}"
 
 
-def get_filtering_function(proposition):
+def get_filtering_function(proposition: Proposition) -> Callable:
     if proposition.operator_string == "=":
         if isinstance(proposition.value, list):
             return lambda x: x[proposition.name] in (proposition.value)

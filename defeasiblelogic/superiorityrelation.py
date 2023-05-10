@@ -1,4 +1,5 @@
 from typing import List, Set, Iterator
+from collections import defaultdict
 from .rule import Rule
 
 
@@ -29,18 +30,13 @@ class SuperiorityRelations:
         self._superiority_relations = set(value)
         """
         Dict holding, for each rule, information about the
-        rules that beat it
+        rules that beat it in a set
         """
-        losers = dict()
+        losers = defaultdict(set)
         for sup_rel in value:
             loser = sup_rel.loser
             winner = sup_rel.winner
-            if loser in losers:
-                losers[loser].add(winner)
-            else:
-                winner_set = set()
-                winner_set.add(winner)
-                losers[loser] = winner_set
+            losers[loser].add(winner)
         """
         Not ideal to mutate state but we need this information.
         If we don't put it here, but for example in __init__,
@@ -50,10 +46,7 @@ class SuperiorityRelations:
         self.losers = losers
 
     def get_winners_against(self, rule: Rule) -> List[Rule]:
-        if rule in self.losers:
-            return self.losers[rule]
-        else:
-            return []
+        return self.losers[rule]
 
     def __iter__(self) -> Iterator[SuperiorityRelation]:
         return self.superiority_relations.__iter__()

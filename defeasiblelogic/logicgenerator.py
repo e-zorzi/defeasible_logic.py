@@ -1,3 +1,3 @@
 class LogicGenerator:
-    def __init__(self):
-        pass
+    def __init__(self) -> None:
+        raise NotImplementedError("Generator not implemented")

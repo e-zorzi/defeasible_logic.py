@@ -11,3 +11,6 @@ class Fact:
 
     def get_value(self):
         return self.value
+
+    def __str__(self):
+        return f"Fact({self.name} = {self.value})"
