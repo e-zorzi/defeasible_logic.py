@@ -4,6 +4,7 @@ from .atom import Atom
 from .rule import Rule
 from .superiorityrelation import SuperiorityRelation
 from .theory import Theory
+from .fact import Fact
 
 
 class ConsistentTheory(Theory):
@@ -14,10 +15,10 @@ class ConsistentTheory(Theory):
     ) -> None:
         super().__init__(rules, superiority_relations)
 
-    def evaluate_arguments(self, args: Arguments) -> bool:
+    def _evaluate_arguments(self, facts: List[Fact]) -> Atom:
         yea, nay = set(), set()
         for rule in self.rules:
-            atom = rule.activate(args.facts)
+            atom = rule.activate(facts)
             if atom.value is not None:
                 if atom.value:
                     yea.add(rule)
@@ -31,11 +32,20 @@ class ConsistentTheory(Theory):
             return Atom(False)
         else:
             # Must break the tie. Check positive rules first
-            # TODO
             all_lose = True
             for oppo in nay:
                 winners = self.superiority_relations.get_winners_against(oppo)
                 if len(winners.intersection(yea)) == 0:
                     all_lose = False
                     break
-            # TODO
+            if all_lose:
+                return Atom(True)
+            all_lose = True
+            for oppo in yea:
+                winners = self.superiority_relations.get_winners_against(oppo)
+                if len(winners.intersection(nay)) == 0:
+                    all_lose = False
+                    break
+            if all_lose:
+                return Atom(False)
+            return Atom()

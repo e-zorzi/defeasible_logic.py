@@ -3,6 +3,7 @@ from .rule import Rule
 from .superiorityrelation import SuperiorityRelation, SuperiorityRelations
 from .arguments import Arguments
 from .atom import Atom
+from .fact import Fact
 
 
 class Theory:
@@ -23,10 +24,18 @@ class Theory:
     def evaluate(self, args: List[Arguments]) -> List[Atom]:
         atoms = []
         for arg in args:
-            atoms.append(self.evaluate_arguments(arg))
+            atoms.append(self._evaluate_arguments(arg.facts))
         return atoms
 
-    def evaluate_arguments(self, args: Arguments) -> Atom:
+    def accuracy_score(self, args: List[Arguments]) -> float:
+        counter = 0
+        for arg in args:
+            res = self._evaluate_arguments(arg.facts)
+            if res == arg.result:
+                counter += 1
+        return counter / len(args)
+
+    def _evaluate_arguments(self, facts: List[Fact]) -> Atom:
         raise NotImplementedError(
             "Evaluation of arguments for general theory has not been implemented yet"
         )

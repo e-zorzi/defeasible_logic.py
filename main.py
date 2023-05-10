@@ -19,4 +19,5 @@ theory = ConsistentTheory(rules, sup_rels)
 facts = [Fact("a"), Fact("b")]
 theory.superiority_relations
 args = Arguments(facts, Atom(True))
-theory.evaluate([args])
+atoms = theory.evaluate([args])
+print(theory.accuracy_score([args]))
