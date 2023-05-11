@@ -1,6 +1,6 @@
 from typing import List, Union, Tuple, Callable
 from .atom import Atom
-from .arguments import Arguments
+from .taggedfacts import TaggedFacts
 from .fact import Fact
 from .proposition import Proposition
 
@@ -38,7 +38,7 @@ class Rule:
             self.antecedents.append(ant)
 
     # TODO check this interface
-    def activate(self, arguments: Arguments) -> Tuple[bool, Atom]:
+    def activate(self, arguments: TaggedFacts) -> Tuple[bool, Atom]:
         if self.evaluate(arguments):
             # Activated and return result as Atom
             return True, Atom(value=self.consequent == 1)

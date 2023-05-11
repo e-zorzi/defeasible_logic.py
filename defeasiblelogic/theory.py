@@ -1,7 +1,7 @@
-from typing import List, Set, Optional
+from typing import List, Optional, Union
 from .rule import Rule
 from .superiorityrelation import SuperiorityRelation, SuperiorityRelations
-from .arguments import Arguments
+from .taggedfacts import TaggedFacts
 from .atom import Atom
 from .fact import Fact
 
@@ -47,15 +47,29 @@ class Theory:
         # self.__theory_string = "" #Add back if use string caching
         self.__superiority_relations = SuperiorityRelations(value)
 
-    def evaluate(self, args: List[Arguments]) -> List[Atom]:
+    def evaluate(self, facts: Union[List[List[Fact]], List[TaggedFacts]]) -> List[Atom]:
+        if not isinstance(facts, list):
+            # Fail safe when only one List[Fact] or TaggedFacts gets passed
+            facts = [facts]
         atoms = []
-        for arg in args:
-            atoms.append(self._evaluate_arguments(arg.facts))
+        for arg in facts:
+            try:
+                # If args is a list of TaggedFacts
+                f = arg.facts
+                atoms.append(self._evaluate_arguments(f))
+            except:
+                # If args is a list of Fact
+                atoms.append(self._evaluate_arguments(arg))
         return atoms
 
-    def accuracy_score(self, args: List[Arguments]) -> float:
+    def accuracy_score(self, args: List[TaggedFacts]) -> float:
+        if not isinstance(args, list):
+            # Fail safe when only one TaggedFacts gets passed
+            args = [args]
         counter = 0
         for arg in args:
+            if not isinstance(arg, TaggedFacts):
+                raise ValueError("Called accuracy_score not on Arguments")
             res = self._evaluate_arguments(arg.facts)
             if res == arg.result:
                 counter += 1

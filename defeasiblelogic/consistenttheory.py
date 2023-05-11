@@ -1,5 +1,5 @@
 from typing import List, Set
-from .arguments import Arguments
+from .taggedfacts import TaggedFacts
 from .atom import Atom
 from .rule import Rule
 from .superiorityrelation import SuperiorityRelation
@@ -49,9 +49,8 @@ class ConsistentTheory(Theory):
                     yea_all_lose = False
                     break
             """
-            Case where all 'nay' rules lose and then later also all 'yea' rules lose: 
-            the result would be that both True and False are put into +partial 
-            but we treat this as undefined 
+            Case where ALL 'nay' AND ALL 'yea' rules lose: the result would be
+            that both True and False are put into +partial but we treat this as undefined 
             """
             if nay_all_lose and yea_all_lose:
                 return Atom()

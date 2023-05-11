@@ -6,7 +6,7 @@ from .theory import Theory
 from .consistenttheory import ConsistentTheory
 from .superiorityrelation import SuperiorityRelation, SuperiorityRelations
 from .proposition import Proposition
-from .arguments import Arguments
+from .taggedfacts import TaggedFacts
 from .logicparser import LogicParser
 from .logicgenerator import LogicGenerator
 
@@ -15,7 +15,7 @@ __all__ = [
     "Rule",
     "Atom",
     "Proposition",
-    "Arguments",
+    "TaggedFacts",
     "Theory",
     "ConsistentTheory",
     "SuperiorityRelation",

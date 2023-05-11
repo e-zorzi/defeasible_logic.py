@@ -2,7 +2,7 @@ import unittest
 from defeasiblelogic import (
     Rule,
     SuperiorityRelation,
-    Arguments,
+    TaggedFacts,
     Proposition,
     ConsistentTheory,
     Fact,
@@ -34,8 +34,7 @@ class TestConsistentTheory(unittest.TestCase):
         ]
         theory = ConsistentTheory(rules, sup_rels)
         facts = [Fact("a"), Fact("b")]
-        args = Arguments(facts, Atom(True))
-        atoms = theory.evaluate([args])
+        atoms = theory.evaluate([facts])
         self.assertEqual(atoms[0], Atom(True))
 
     def test_algorithm_2(self):
@@ -59,8 +58,9 @@ class TestConsistentTheory(unittest.TestCase):
         ]
         theory = ConsistentTheory(rules, sup_rels)
         facts = [Fact("a"), Fact("b")]
-        args = Arguments(facts, Atom(True))
-        atoms = theory.evaluate([args])
+        arg = TaggedFacts(facts, Atom(True))
+        # Test List[Arguments] passing
+        atoms = theory.evaluate([arg])
         self.assertEqual(atoms[0], Atom())
 
     def test_algorithm_3(self):
@@ -86,8 +86,7 @@ class TestConsistentTheory(unittest.TestCase):
         ]
         theory = ConsistentTheory(rules, sup_rels)
         facts = [Fact("a"), Fact("b")]
-        args = Arguments(facts, Atom(True))
-        atoms = theory.evaluate([args])
+        atoms = theory.evaluate([facts])
         self.assertEqual(atoms[0], Atom(True))
 
     def test_algorithm_4(self):
@@ -111,8 +110,7 @@ class TestConsistentTheory(unittest.TestCase):
         ]
         theory = ConsistentTheory(rules, sup_rels)
         facts = [Fact("a"), Fact("b")]
-        args = Arguments(facts, Atom(True))
-        atoms = theory.evaluate([args])
+        atoms = theory.evaluate([facts])
         self.assertEqual(atoms[0], Atom())
 
     def test_algorithm_5(self):
@@ -135,9 +133,58 @@ class TestConsistentTheory(unittest.TestCase):
         ]
         theory = ConsistentTheory(rules, sup_rels)
         facts = [Fact("a"), Fact("b")]
-        args = Arguments(facts, Atom(True))
-        atoms = theory.evaluate([args])
+        arg = TaggedFacts(facts, Atom(True))
+        atoms = theory.evaluate([arg])
         self.assertEqual(atoms[0], Atom(False))
+
+    # Correctly computes the accuracy of a single argument
+    def test_algorithm_6(self):
+        """
+        facts: a,b
+
+        r1: a => 1
+        r2: b => 0
+
+        r1 < r2
+
+        Should return 0
+        """
+
+        rule1 = Rule([Proposition("a")], consequent=1)
+        rule2 = Rule([Proposition("b")], consequent=0)
+        rules = [rule1, rule2]
+        sup_rels = [
+            SuperiorityRelation(rule1, rule2),
+        ]
+        theory = ConsistentTheory(rules, sup_rels)
+        facts = [Fact("a"), Fact("b")]
+        arg = TaggedFacts(facts, Atom(False))
+        self.assertEqual(theory.accuracy_score(arg), 1.0)
+
+    # Nontheless, ConsistenTheory fails if passed a list of facts to the
+    # accuracy_score
+    def test_algorithm_7(self):
+        """
+        facts: a,b
+
+        r1: a => 1
+        r2: b => 0
+
+        r1 < r2
+
+        Should return 0
+        """
+
+        rule1 = Rule([Proposition("a")], consequent=1)
+        rule2 = Rule([Proposition("b")], consequent=0)
+        rules = [rule1, rule2]
+        sup_rels = [
+            SuperiorityRelation(rule1, rule2),
+        ]
+        theory = ConsistentTheory(rules, sup_rels)
+        facts = [Fact("a"), Fact("b")]
+        with self.assertRaises(ValueError):
+            theory.accuracy_score([facts])
 
     def test_arguments_passing(self):
         """
@@ -159,10 +206,10 @@ class TestConsistentTheory(unittest.TestCase):
         facts2 = [Fact("a"), Fact("b"), Fact("c")]  # Should create return 1
         facts3 = [Fact("c"), Fact("d")]  # Should create return undefined
 
-        args1 = Arguments(facts1, Atom(False))
-        args2 = Arguments(facts2, Atom(True))
-        args3 = Arguments(facts3, Atom())
-        atoms = theory.evaluate([args1, args2, args3])
-        acc = theory.accuracy_score([args1, args2, args3])
+        arg1 = TaggedFacts(facts1, Atom(False))
+        arg2 = TaggedFacts(facts2, Atom(True))
+        arg3 = TaggedFacts(facts3, Atom())
+        atoms = theory.evaluate([arg1, arg2, arg3])
+        acc = theory.accuracy_score([arg1, arg2, arg3])
         # They all coincide
         self.assertEqual(acc, 1.0)

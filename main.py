@@ -1,4 +1,4 @@
-from defeasiblelogic.arguments import Arguments
+from defeasiblelogic.taggedfacts import TaggedFacts
 from defeasiblelogic.atom import Atom
 from defeasiblelogic.fact import Fact
 from defeasiblelogic.proposition import Proposition
@@ -19,9 +19,9 @@ facts1 = [Fact("a"), Fact("b")]  # Should create return 0
 facts2 = [Fact("a"), Fact("b"), Fact("c")]  # Should create return 1
 facts3 = [Fact("c"), Fact("d")]  # Should create return undefined
 
-args1 = Arguments(facts1, Atom(False))
-args2 = Arguments(facts2, Atom(True))
-args3 = Arguments(facts3, Atom())
+args1 = TaggedFacts(facts1, Atom(False))
+args2 = TaggedFacts(facts2, Atom(True))
+args3 = TaggedFacts(facts3, Atom())
 atoms = theory.evaluate([args1, args2, args3])
 for atom in atoms:
     print(atom)

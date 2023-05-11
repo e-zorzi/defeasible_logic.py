@@ -4,7 +4,7 @@ from .fact import Fact
 from .atom import Atom
 
 
-class Arguments:
+class TaggedFacts:
     def __init__(self, facts: List[Fact], result: Atom) -> None:
         if result.value is None:
             warnings.warn(

@@ -7,7 +7,7 @@ class SuperiorityRelation:
     def __init__(self, loser: Rule, winner: Rule) -> None:
         if not loser.has_opposite_consequent(winner):
             raise ValueError(
-                "Cannot instantiate a Superiority Relation between two rules that have not the opposite consequent"
+                "Cannot instantiate a Superiority Relation between two rules that have not opposite consequent"
             )
         self.loser = loser
         self.winner = winner
@@ -22,12 +22,12 @@ class SuperiorityRelations:
 
     @property
     def superiority_relations(self) -> Set[SuperiorityRelation]:
-        return self._superiority_relations
+        return self.__superiority_relations
 
     @superiority_relations.setter
     def superiority_relations(self, value: List[SuperiorityRelation]) -> None:
         # We want a set for O(1) membership tests
-        self._superiority_relations = set(value)
+        self.__superiority_relations = set(value)
         """
         Dict holding, for each rule, information about the
         rules that beat it in a set
@@ -45,7 +45,7 @@ class SuperiorityRelations:
         """
         self.losers = losers
 
-    def get_winners_against(self, rule: Rule) -> List[Rule]:
+    def get_winners_against(self, rule: Rule) -> Set[Rule]:
         return self.losers[rule]
 
     def __iter__(self) -> Iterator[SuperiorityRelation]:
