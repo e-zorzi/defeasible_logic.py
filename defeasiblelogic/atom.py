@@ -7,6 +7,9 @@ class Atom:
             return False
         return self.value == __other.value
 
+    def __hash__(self) -> int:
+        return hash((self.value))
+
     def __str__(self):
         if self.value is None:
             return "Atom()"

@@ -38,6 +38,18 @@ class Proposition:
             return self.operator(int(arg.get_value()), int(self.value))
         return False
 
+    def __eq__(self, __value: object) -> bool:
+        if not isinstance(__value, Proposition):
+            return False
+        return (
+            self.name == __value.name
+            and self.operator == __value.operator
+            and self.value == __value.value
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.operator, self.value))
+
     def __str__(self):
         if isinstance(self.value, list):
             if len(self.value) == 1:

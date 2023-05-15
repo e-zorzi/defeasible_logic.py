@@ -40,3 +40,29 @@ class TestRule(unittest.TestCase):
         activated, atom = rule2.activate([Fact("a"), Fact("b", 4)])
         self.assertTrue(activated)
         self.assertEqual(atom, Atom(False))
+
+    def test_equality(self):
+        a = Rule(Proposition("a", 3), consequent=0, rule_type="defeater")
+        b = Rule(Proposition("a", 3), consequent=0, rule_type="defeasible")
+        # Different type
+        self.assertNotEqual(a, b)
+        # Identical
+        c = Rule(Proposition("a", 3), consequent=0, rule_type="defeater")
+        self.assertEqual(a, c)
+        # More propositions, but the same one (it's a set so it collapse into one)
+        d = Rule(
+            [Proposition("a", 3), Proposition("a", 3)],
+            consequent=0,
+            rule_type="defeasible",
+        )
+        self.assertEqual(b, d)
+        # Different values in propositions
+        e = Rule(
+            [Proposition("a", 3), Proposition("a", 4)],
+            consequent=0,
+            rule_type="defeasible",
+        )
+        self.assertNotEqual(b, e)
+        # Different consequent (and default defeasible)
+        f = Rule(Proposition("a", 3), consequent=1)
+        self.assertNotEqual(b, f)

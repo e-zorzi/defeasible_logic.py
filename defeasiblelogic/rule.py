@@ -1,5 +1,5 @@
-from typing import List, Union, Tuple, Callable
 import warnings
+from typing import List, Union, Tuple, Callable, Set
 from .atom import Atom
 from .taggedfacts import TaggedFacts
 from .fact import Fact
@@ -9,16 +9,18 @@ from .proposition import Proposition
 class Rule:
     def __init__(
         self,
-        antecedents: Union[Proposition, List[Proposition], None] = None,
+        antecedents: Union[
+            Proposition, List[Proposition], Set[Proposition], None
+        ] = None,
         consequent=1,
         rule_type="defeasible",
     ):
         if antecedents is None:
-            self.antecedents = list()
+            self.antecedents = set()
         elif isinstance(antecedents, Proposition):
-            self.antecedents = [antecedents]
+            self.antecedents = set([antecedents])
         else:
-            self.antecedents = antecedents
+            self.antecedents = set(antecedents)
         self.consequent = consequent
         self.rule_type = rule_type
 
@@ -85,11 +87,46 @@ class Rule:
         if len(self.antecedents) == 0:
             return f"{arrow} {self.consequent}"
         else:
-            str_antecedents = f"{str(self.antecedents[0])}"
-            for i in range(1, len(self.antecedents)):
-                str_antecedents += f", {str(self.antecedents[1])}"
+            ants = list(self.antecedents)
+            str_antecedents = f"{str(ants[0])}"
+            for i in range(1, len(ants)):
+                str_antecedents += f", {str(ants[i])}"
             return f"{str_antecedents} {arrow} {self.consequent}"
 
+    def __eq__(self, __value: object) -> bool:
+        if not isinstance(__value, Rule):
+            return False
+        if (
+            self.consequent != __value.consequent
+            or self.rule_type != __value.rule_type
+            or len(self.antecedents) != len(__value.antecedents)
+            or self.antecedents != __value.antecedents
+        ):
+            return False
+
+        return True
+
+    def __eq__no_rule_type(self, __value: object) -> bool:
+        """Equality up to rule_type"""
+        if not isinstance(__value, Rule):
+            return False
+        if (
+            self.consequent != __value.consequent
+            or len(self.antecedents) != len(__value.antecedents)
+            or self.antecedents != __value.antecedents
+        ):
+            return False
+
+        return True
+
+    def __hash__(self):
+        _hash = 0
+        for elem in self.antecedents:
+            _hash += hash(elem)
+        return hash((self.consequent, self.rule_type, _hash))
+
+    # String representation as if it were a defeasible rule
+    # TODO temporary patch before implementing equality and equality_with_no_type
     def to_str_def(self) -> str:
         """TODO remove (bad design)"""
         warnings.warn(
