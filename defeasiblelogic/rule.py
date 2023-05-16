@@ -82,6 +82,18 @@ class Rule:
                 str_antecedents += f", {str(self.antecedents[1])}"
             return f"{str_antecedents} {arrow} {self.consequent}"
 
+    def to_str_def(self) -> str:
+        if self.rule_type == "defeasible":
+            return self.__str__()
+        else:
+            if len(self.antecedents) == 0:
+                return f"=> {self.consequent}"
+            else:
+                str_antecedents = f"{str(self.antecedents[0])}"
+                for i in range(1, len(self.antecedents)):
+                    str_antecedents += f", {str(self.antecedents[i])}"
+                return f"{str_antecedents} => {self.consequent}"
+
 
 def get_filtering_function(proposition: Proposition) -> Callable:
     if proposition.operator_string == "=":
