@@ -1,10 +1,13 @@
 import operator
-from typing import Union
+from typing import Union, List
 
 
 class Proposition:
     def __init__(
-        self, name: str, value: Union[None, int, bool] = None, operator: str = "="
+        self,
+        name: str,
+        value: Union[int, bool, List[int], List[bool], None] = None,
+        operator: str = "=",
     ) -> None:
         self.name = name
         if value is None:
@@ -48,6 +51,8 @@ class Proposition:
         )
 
     def __hash__(self) -> int:
+        if isinstance(self.value, list) or isinstance(self.value, set):
+            return hash((self.name, self.operator, frozenset(self.value)))
         return hash((self.name, self.operator, self.value))
 
     def __str__(self):

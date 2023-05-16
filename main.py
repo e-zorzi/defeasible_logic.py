@@ -9,16 +9,19 @@ from defeasiblelogic.superiorityrelation import (
 )
 from defeasiblelogic.consistenttheory import ConsistentTheory
 
+best_name = "odor"
+best_l_ant = [0.0, 1.0, 3.0]
+best_gini_l = 0.00
+rule = Rule(
+    antecedents=[Proposition(best_name, best_l_ant, operator="=")],
+    consequent=0,
+    rule_type=("strict" if best_gini_l == 0 else "defeasible"),
+)
+rule2 = Rule(
+    antecedents=[Proposition("a")],
+    consequent=0,
+    rule_type=("strict" if best_gini_l == 0 else "defeasible"),
+)
 
-a = Rule(Proposition("a", 3), consequent=0, rule_type="defeater")
-b = Rule(Proposition("a", 3), consequent=1, rule_type="defeasible")
-
-c = Rule(Proposition("a", 3), consequent=0, rule_type="defeater")
-a == c
-print(a.__hash__())
-print(c.__hash__())
-
-sup1 = SuperiorityRelation(a, b)
-sup2 = SuperiorityRelation(b, c)
-sups = SuperiorityRelations([sup1, sup2])
-print(c.to_str_def())
+rule.add_antecedent(rule2.antecedents)
+print(rule)

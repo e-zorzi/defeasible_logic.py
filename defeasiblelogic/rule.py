@@ -36,9 +36,11 @@ class Rule:
                 return False
         return True
 
-    def add_antecedent(self, *ants):
-        for ant in ants:
-            self.antecedents.append(ant)
+    def add_antecedent(self, ants):
+        if not isinstance(self.antecedents, set):
+            self.antecedents = set(self.antecedents)
+        for ant in list(ants):
+            self.antecedents.add(ant)
 
     # TODO check this interface
     def activate(self, arguments: TaggedFacts) -> Tuple[bool, Atom]:
