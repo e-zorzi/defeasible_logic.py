@@ -138,9 +138,10 @@ class Rule:
             if len(self.antecedents) == 0:
                 return f"=> {self.consequent}"
             else:
-                str_antecedents = f"{str(self.antecedents[0])}"
-                for i in range(1, len(self.antecedents)):
-                    str_antecedents += f", {str(self.antecedents[i])}"
+                ants = list(self.antecedents)
+                str_antecedents = f"{str(ants[0])}"
+                for i in range(1, len(ants)):
+                    str_antecedents += f", {str(ants[i])}"
                 return f"{str_antecedents} => {self.consequent}"
 
 
