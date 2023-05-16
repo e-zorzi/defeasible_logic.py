@@ -66,6 +66,11 @@ class Rule:
         else:
             return False
 
+    def same_antecedents_names(self, __other) -> bool:
+        ours = set([a.name for a in self.antecedents])
+        theirs = set([a.name for a in __other.antecedents])
+        return ours == theirs
+
     def __str__(self) -> str:
         arrow = (
             "=>"
