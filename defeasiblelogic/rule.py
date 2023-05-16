@@ -1,4 +1,5 @@
 from typing import List, Union, Tuple, Callable
+import warnings
 from .atom import Atom
 from .taggedfacts import TaggedFacts
 from .fact import Fact
@@ -67,6 +68,8 @@ class Rule:
             return False
 
     def same_antecedents_names(self, __other) -> bool:
+        if not isinstance(__other, Rule):
+            return False
         ours = set([a.name for a in self.antecedents])
         theirs = set([a.name for a in __other.antecedents])
         return ours == theirs
@@ -88,6 +91,10 @@ class Rule:
             return f"{str_antecedents} {arrow} {self.consequent}"
 
     def to_str_def(self) -> str:
+        """TODO remove (bad design)"""
+        warnings.warn(
+            "Deprecation warning: `to_str_def' is going to be deprecated soon"
+        )
         if self.rule_type == "defeasible":
             return self.__str__()
         else:
