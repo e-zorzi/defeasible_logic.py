@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="defeasiblelogic",
-    version="0.2.5",
+    version="0.2.6",
     description="Simple package implementing defeasible logic",
     author="Edoardo Zorzi",
     author_email="edovi@icloud.com",

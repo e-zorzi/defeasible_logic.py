@@ -9,19 +9,10 @@ from defeasiblelogic.superiorityrelation import (
 )
 from defeasiblelogic.consistenttheory import ConsistentTheory
 
-best_name = "odor"
-best_l_ant = [0.0, 1.0, 3.0]
-best_gini_l = 0.00
-rule = Rule(
-    antecedents=[Proposition(best_name, best_l_ant, operator="=")],
-    consequent=0,
-    rule_type=("strict" if best_gini_l == 0 else "defeasible"),
-)
-rule2 = Rule(
-    antecedents=[Proposition("a")],
-    consequent=0,
-    rule_type=("strict" if best_gini_l == 0 else "defeasible"),
-)
-
-rule.add_antecedent(rule2.antecedents)
-print(rule)
+rule1 = Rule([Proposition("a")], consequent=1, rule_type="strict")
+rule2 = Rule([Proposition("b")], consequent=0)
+rules = [rule1, rule2]
+sup_rels = []
+theory = ConsistentTheory(rules, sup_rels)
+facts = [Fact("a"), Fact("b")]
+atoms = theory.evaluate([facts])

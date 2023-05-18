@@ -1,11 +1,5 @@
 import unittest
-from defeasiblelogic import (
-    Rule,
-    Proposition,
-    ConsistentTheory,
-    Fact,
-    Atom,
-)
+from defeasiblelogic import Rule, Proposition, ConsistentTheory, Fact, Atom, util
 
 
 class TestRule(unittest.TestCase):
@@ -13,31 +7,37 @@ class TestRule(unittest.TestCase):
         propositions = [Proposition("a"), Proposition("b", 4, operator="<=")]
         rule = Rule(antecedents=propositions, consequent=1)
 
-        activated, atom = rule.activate([Fact("a")])
+        activated, atom = rule.activate(util.facts_list_to_dict([Fact("a")]))
         self.assertFalse(activated)
         self.assertEqual(atom, Atom())
 
-        activated, atom = rule.activate([Fact("b", 4)])
+        activated, atom = rule.activate(util.facts_list_to_dict([Fact("b", 4)]))
         self.assertFalse(activated)
         self.assertEqual(atom, Atom())
 
-        activated, atom = rule.activate([Fact("a"), Fact("b", 4)])
+        activated, atom = rule.activate(
+            util.facts_list_to_dict([Fact("a"), Fact("b", 4)])
+        )
         self.assertTrue(activated)
         self.assertEqual(atom, Atom(True))
 
-        activated, atom = rule.activate([Fact("b", 4), Fact("b", 5), Fact("a")])
+        activated, atom = rule.activate(
+            util.facts_list_to_dict([Fact("b", 4), Fact("b", 5), Fact("a")])
+        )
         self.assertTrue(activated)
         self.assertEqual(atom, Atom(True))
 
         facts4 = [Fact("a"), Fact("b", 5)]
-        activated, atom = rule.activate(facts4)
+        activated, atom = rule.activate(util.facts_list_to_dict(facts4))
         self.assertFalse(activated)
         self.assertEqual(atom, Atom())
 
         # New rule, opposite consequent
         rule2 = Rule(antecedents=propositions, consequent=0)
 
-        activated, atom = rule2.activate([Fact("a"), Fact("b", 4)])
+        activated, atom = rule2.activate(
+            util.facts_list_to_dict([Fact("a"), Fact("b", 4)])
+        )
         self.assertTrue(activated)
         self.assertEqual(atom, Atom(False))
 
@@ -65,6 +65,8 @@ class TestRule(unittest.TestCase):
             rule_type="defeasible",
         )
         self.assertNotEqual(b, e)
+        # eq_no_type fails
+        self.assertFalse(b.eq_no_rule_type(e))
         # Different consequent (and default defeasible)
         f = Rule(Proposition("a", 3), consequent=1)
         self.assertNotEqual(b, f)

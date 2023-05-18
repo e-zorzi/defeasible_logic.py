@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Union, Tuple, Callable, Set
+from typing import List, Union, Tuple, Callable, Set, Dict
 from .atom import Atom
 from .taggedfacts import TaggedFacts
 from .fact import Fact
@@ -25,10 +25,12 @@ class Rule:
         self.rule_type = rule_type
 
     # TODO think of passing either facts or argument
-    def evaluate(self, facts: List[Fact]) -> bool:
+    def evaluate(self, facts: Dict[str, List[Fact]]) -> bool:
         for proposition in self.antecedents:
+            if proposition.name not in facts.keys():
+                return False
             proposition_value = False
-            for arg in facts:
+            for arg in facts[proposition.name]:
                 if proposition.evaluate(arg):
                     proposition_value = True
                     break
@@ -43,13 +45,13 @@ class Rule:
             self.antecedents.add(ant)
 
     # TODO check this interface
-    def activate(self, arguments: TaggedFacts) -> Tuple[bool, Atom]:
+    def activate(self, arguments: Dict[str, List[Fact]]) -> Tuple[bool, Atom]:
         if self.evaluate(arguments):
             # Activated and return result as Atom
             return True, Atom(value=self.consequent == 1)
         else:
-            # Not activated; advisable to never use the second a
-            # rgument in this case
+            # Not activated; advisable to never use the second
+            # argument in this case
             return False, Atom()
 
     def slice_dataframe(self, df, complement=False):

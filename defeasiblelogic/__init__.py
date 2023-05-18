@@ -9,6 +9,7 @@ from .proposition import Proposition
 from .taggedfacts import TaggedFacts
 from .logicparser import LogicParser
 from .logicgenerator import LogicGenerator
+from .util import util
 
 __all__ = [
     "Fact",
@@ -22,4 +23,5 @@ __all__ = [
     "SuperiorityRelations",
     "LogicParser",
     "LogicGenerator",
+    "util",
 ]

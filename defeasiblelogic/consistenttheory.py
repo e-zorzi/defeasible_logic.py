@@ -1,4 +1,6 @@
 from typing import List, Set
+
+from .util import util
 from .taggedfacts import TaggedFacts
 from .atom import Atom
 from .rule import Rule
@@ -16,14 +18,21 @@ class ConsistentTheory(Theory):
         super().__init__(rules, superiority_relations)
 
     def _evaluate_arguments(self, facts: List[Fact]) -> Atom:
+        # Create dict of facts with names
+        facts_dict = util.facts_list_to_dict(facts)
         yea, nay = set(), set()
         for rule in self.rules:
-            activated, atom = rule.activate(facts)
-            if activated:
+            activated, atom = rule.activate(facts_dict)
+            if activated and rule.rule_type == "defeasible":
                 if atom.value:
                     yea.add(rule)
                 else:
                     nay.add(rule)
+            elif activated and rule.rule_type == "strict":
+                if atom.value:
+                    return Atom(True)
+                else:
+                    return Atom(False)
         if len(yea) == len(nay) and len(yea) == 0:
             return Atom()
         elif len(nay) == 0 and len(yea) > 0:

@@ -186,6 +186,32 @@ class TestConsistentTheory(unittest.TestCase):
         with self.assertRaises(ValueError):
             theory.accuracy_score([facts])
 
+    def test_algorithm_strict(self):
+        """
+        facts: a,b
+
+        r1: a -> 1
+        r2: b => 0
+
+        Should return 1
+        """
+
+        rule1 = Rule([Proposition("a")], consequent=1, rule_type="strict")
+        rule2 = Rule([Proposition("b")], consequent=0)
+        rules = [rule1, rule2]
+        sup_rels = []
+        theory = ConsistentTheory(rules, sup_rels)
+        facts = [Fact("a"), Fact("b")]
+        atoms = theory.evaluate([facts])
+        self.assertEqual(atoms[0], Atom(True))
+
+        """Should also return the same with superiority relation (it doesn't apply to strict rules)"""
+        sup_rels = [SuperiorityRelation(rule1, rule2)]
+        theory2 = ConsistentTheory(rules, sup_rels)
+
+        atoms2 = theory2.evaluate([facts])
+        self.assertEqual(atoms2[0], Atom(True))
+
     def test_arguments_passing(self):
         """
         r1: a, b => 0
