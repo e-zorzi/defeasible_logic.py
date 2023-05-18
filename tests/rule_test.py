@@ -46,6 +46,8 @@ class TestRule(unittest.TestCase):
         b = Rule(Proposition("a", 3), consequent=0, rule_type="defeasible")
         # Different type
         self.assertNotEqual(a, b)
+        # Use eq_no_type
+        self.assertTrue(a.eq_no_rule_type(b))
         # Identical
         c = Rule(Proposition("a", 3), consequent=0, rule_type="defeater")
         self.assertEqual(a, c)

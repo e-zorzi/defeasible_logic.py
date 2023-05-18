@@ -108,7 +108,7 @@ class Rule:
 
         return True
 
-    def __eq__no_rule_type(self, __value: object) -> bool:
+    def eq_no_rule_type(self, __value: object) -> bool:
         """Equality up to rule_type"""
         if not isinstance(__value, Rule):
             return False
