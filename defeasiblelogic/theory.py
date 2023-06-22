@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Set
 from .rule import Rule
 from .superiorityrelation import SuperiorityRelation, SuperiorityRelations
 from .taggedfacts import TaggedFacts
@@ -15,18 +15,26 @@ class Theory:
         self.superiority_relations = superiority_relations
 
     @property
-    def rules(self) -> List[Rule]:
+    def rules(self) -> Set[Rule]:
         return self.__rules
 
     @rules.setter
     def rules(self, value: List[Rule]) -> None:
         # Clean self string
         # self.__theory_string = "" #Add back if use string caching
-        self.__rules = value
+        self.__rules = set(value)
+
+    def remove_rule(self, rule: Rule, inplace: bool = False) -> Optional["Theory"]:
+        try:
+            self.__rules.remove(rule)
+        except KeyError:
+            pass
+        if not inplace:
+            return self
 
     def add_rule(self, rule: Rule, inplace: bool = False) -> Optional["Theory"]:
         # self.__theory_string = "" #Add back if use string caching
-        self.rules.append(rule)
+        self.rules.add(rule)
         if not inplace:
             return self
 

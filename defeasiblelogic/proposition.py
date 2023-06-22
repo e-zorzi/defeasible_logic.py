@@ -20,7 +20,7 @@ class Proposition:
         if (
             operator != "="
             and operator != "!="
-            and (isinstance(value, list) or value in [True, False])
+            and (isinstance(value, list) or isinstance(value, bool))
         ):
             raise ValueError(
                 "Used wrong operator (only '=' and '!=' allowed) for list or boolean value"

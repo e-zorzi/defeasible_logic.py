@@ -239,3 +239,27 @@ class TestConsistentTheory(unittest.TestCase):
         acc = theory.accuracy_score([arg1, arg2, arg3])
         # They all coincide
         self.assertEqual(acc, 1.0)
+
+    def test_manipulate_theory(self):
+        """
+        r1: a, b => 0
+        r2:    c => 1
+        r3:    d => 0
+
+        r1 < r2
+        """
+        rule1 = Rule([Proposition("a"), Proposition("b")], consequent=0)
+        rule2 = Rule(Proposition("c"), consequent=1)
+        rule3 = Rule(Proposition("d"), consequent=0)
+        rules = [rule1, rule2]
+        sup_rels = [
+            SuperiorityRelation(rule1, rule2),
+        ]
+        theory = ConsistentTheory(rules, sup_rels)
+        theory.add_rule(rule3)
+        for r in rules + [rule3]:
+            self.assertTrue(r in theory.rules)
+        theory.remove_rule(rule3)
+        for r in rules:
+            self.assertTrue(r in theory.rules)
+        self.assertTrue(rule3 not in theory.rules)
