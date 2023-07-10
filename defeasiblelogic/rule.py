@@ -4,6 +4,7 @@ from .atom import Atom
 from .taggedfacts import TaggedFacts
 from .fact import Fact
 from .proposition import Proposition
+import numpy as np
 
 
 class Rule:
@@ -56,12 +57,13 @@ class Rule:
 
     def slice_dataframe(self, df, complement=False):
         tmp = df.copy()
+        mask = np.ones((len(df),), dtype=bool)
         for prop in self.antecedents:
             f = get_filtering_function(prop)
-            mask = tmp.apply(f, axis=1)
-            if complement:
-                mask = ~mask
-            tmp = tmp[mask == True]
+            mask &= tmp.apply(f, axis=1)
+        if complement:
+            mask = ~mask
+        tmp = tmp[mask == True]
         return tmp
 
     def has_opposite_consequent(self, __other: object) -> bool:

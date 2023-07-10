@@ -1,5 +1,6 @@
 import unittest
 from defeasiblelogic import Rule, Proposition, ConsistentTheory, Fact, Atom, util
+import pandas as pd
 
 
 class TestRule(unittest.TestCase):
@@ -70,3 +71,16 @@ class TestRule(unittest.TestCase):
         # Different consequent (and default defeasible)
         f = Rule(Proposition("a", 3), consequent=1)
         self.assertNotEqual(b, f)
+
+    def test_slice_dataframe(self):
+        df = pd.DataFrame([[0, 0], [0, 1], [1, 0], [1, 1]], columns=["a", "b"])
+        rule = Rule(antecedents=[Proposition("a", 1, "="), Proposition("b", 0, "=")])
+        df_ = rule.slice_dataframe(df)
+        self.assertEqual(len(df_), 1)
+        self.assertEqual(list(df_.iloc[0, :]), [1, 0])
+        # Complement
+        df_ = rule.slice_dataframe(df, complement=True)
+        self.assertEqual(len(df_), 3)
+        self.assertEqual(list(df_.iloc[0, :]), [0, 0])
+        self.assertEqual(list(df_.iloc[1, :]), [0, 1])
+        self.assertEqual(list(df_.iloc[2, :]), [1, 1])
